@@ -34,5 +34,69 @@ class Numbers extends StatelessWidget {
         },
       ),
     );
+
+    // switch (maxValue) {
+    //   case 1:
+    //     {
+    //       return Column(
+    //         children: <Widget>[
+    //           Expanded(
+    //               flex: 3,
+    //               child: Align(
+    //                 alignment: Alignment.bottomCenter,
+    //                 child: Text(" 1 "),
+    //               )),
+    //           Expanded(
+    //             flex: 9,
+    //             child: Container(),
+    //           )
+    //         ],
+    //       );
+    //     }
+    //     break;
+    //   case 2:
+    //     {
+    //       return Column(
+    //         children: <Widget>[
+    //           Expanded(
+    //             flex: 5,
+    //             child: Align(
+    //               alignment: Alignment.bottomCenter,
+    //               child: Text(" 2 "),
+    //             ),
+    //           ),
+    //           Expanded(
+    //             flex: 10,
+    //             child: Align(
+    //               alignment: Alignment.bottomCenter,
+    //               child: Text(" 1 "),
+    //             ),
+    //           ),
+    //           Expanded(
+    //             flex: 9,
+    //             child: Container(),
+    //           )
+    //         ],
+    //       );
+    //     }
+    //     break;
+    //   default:
+    //     {
+    //       return Column(
+    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //         verticalDirection: VerticalDirection.up,
+    //         crossAxisAlignment: CrossAxisAlignment.stretch,
+    //         children: List.generate(
+    //           maxValue,
+    //           (index) {
+    //             return Align(
+    //                 alignment: Alignment.bottomCenter,
+    //                 child: Text(' ${index + 1} '));
+    //           },
+    //         ),
+    //       );
+    //     }
+    //     break;
+    // }
   }
 }
