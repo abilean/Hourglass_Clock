@@ -5,6 +5,8 @@
 import 'dart:async';
 //import 'dart:html';
 
+import 'package:digital_clock/animated_sand.dart';
+import 'package:digital_clock/falling_sand.dart';
 import 'package:digital_clock/hourglass.dart';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +42,13 @@ class DigitalClock extends StatefulWidget {
   _DigitalClockState createState() => _DigitalClockState();
 }
 
-class _DigitalClockState extends State<DigitalClock> {
+class _DigitalClockState extends State<DigitalClock>
+    with SingleTickerProviderStateMixin {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
+
+  Animation<double> sandAnimation;
+  AnimationController sandController;
 
   @override
   void initState() {
@@ -50,6 +56,13 @@ class _DigitalClockState extends State<DigitalClock> {
     widget.model.addListener(_updateModel);
     _updateTime();
     _updateModel();
+
+    sandController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+    sandAnimation = Tween<double>(begin: 0, end: 300).animate(sandController);
+    sandController.repeat();
   }
 
   @override
@@ -66,6 +79,7 @@ class _DigitalClockState extends State<DigitalClock> {
     _timer?.cancel();
     widget.model.removeListener(_updateModel);
     widget.model.dispose();
+    sandController.dispose();
     super.dispose();
   }
 
@@ -76,6 +90,8 @@ class _DigitalClockState extends State<DigitalClock> {
   }
 
   void _updateTime() {
+    // sandController?.reset();
+    // sandController?.forward();
     setState(() {
       _dateTime = DateTime.now();
       // Update once per minute. If you want to update every second, use the
@@ -104,10 +120,7 @@ class _DigitalClockState extends State<DigitalClock> {
         .format(_dateTime));
     final minute = _dateTime.minute;
     final second = _dateTime.second;
-    final hourDivider = widget.model.is24HourFormat ? 24 : 13;
-    final secondPercent = (second / 60);
     final minutePercent = (minute + (second / 60)) / 60;
-    final hourPercent = (hour + (minute / 60)) / hourDivider;
     // final fontSize = MediaQuery.of(context).size.height / 50;
     // final offset = fontSize / 7;
     // final defaultStyle = TextStyle(
@@ -139,38 +152,18 @@ class _DigitalClockState extends State<DigitalClock> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Flexible(
-                fit: FlexFit.tight,
-                child: HourGlass(
-                  backgroundColor: colors[_Element.background],
-                  maxNumber: widget.model.is24HourFormat ? 24 : 13,
-                  timePercent: hourPercent,
-                ),
-              ),
-              // Flexible(
-              //   fit: FlexFit.tight,
-              //   child: Column(
-              //     children: <Widget>[
-              //       DecoratedBox(
-              //         decoration: BoxDecoration(color: Colors.white),
-              //       )
-              //     ],
-              //   ),
+              // AnimatedSand(
+              //   animation: sandAnimation,
               // ),
+              // FallingSand(constraints.maxHeight),
               Flexible(
                 fit: FlexFit.tight,
                 child: HourGlass(
                   backgroundColor: colors[_Element.background],
                   maxNumber: 60,
                   timePercent: minutePercent,
-                ),
-              ),
-              Flexible(
-                fit: FlexFit.tight,
-                child: HourGlass(
-                  backgroundColor: colors[_Element.background],
-                  maxNumber: 60,
-                  timePercent: secondPercent,
+                  hour: hour,
+                  maxHeight: constraints.maxHeight,
                 ),
               ),
             ],

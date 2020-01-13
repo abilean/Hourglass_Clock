@@ -13,7 +13,7 @@ class Numbers extends StatelessWidget {
     } else if (maxValue <= 24) {
       _spacing = 3;
     } else {
-      _spacing = 10;
+      _spacing = 15;
     }
 
     return Column(
