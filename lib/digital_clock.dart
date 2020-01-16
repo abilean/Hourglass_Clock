@@ -5,12 +5,11 @@
 import 'dart:async';
 //import 'dart:html';
 
-import 'package:digital_clock/animated_sand.dart';
-import 'package:digital_clock/falling_sand.dart';
 import 'package:digital_clock/hourglass.dart';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 enum _Element {
   background,
@@ -47,8 +46,9 @@ class _DigitalClockState extends State<DigitalClock>
   DateTime _dateTime = DateTime.now();
   Timer _timer;
 
-  Animation<double> sandAnimation;
-  AnimationController sandController;
+  Animation<double> _hgRotateAnimation;
+  Animation<double> _hgScaleAnimation;
+  AnimationController _hgController;
 
   @override
   void initState() {
@@ -57,12 +57,12 @@ class _DigitalClockState extends State<DigitalClock>
     _updateTime();
     _updateModel();
 
-    sandController = AnimationController(
-      duration: const Duration(seconds: 1),
+    _hgController = AnimationController(
+      duration: const Duration(seconds: 5),
       vsync: this,
     );
-    sandAnimation = Tween<double>(begin: 0, end: 300).animate(sandController);
-    sandController.repeat();
+    _hgRotateAnimation = Tween<double>(begin: 0, end: 4).animate(_hgController);
+    _hgScaleAnimation = Tween<double>(begin: 1, end: 0).animate(_hgController);
   }
 
   @override
@@ -79,7 +79,7 @@ class _DigitalClockState extends State<DigitalClock>
     _timer?.cancel();
     widget.model.removeListener(_updateModel);
     widget.model.dispose();
-    sandController.dispose();
+    _hgController.dispose();
     super.dispose();
   }
 
@@ -90,24 +90,24 @@ class _DigitalClockState extends State<DigitalClock>
   }
 
   void _updateTime() {
-    // sandController?.reset();
-    // sandController?.forward();
     setState(() {
       _dateTime = DateTime.now();
-      // Update once per minute. If you want to update every second, use the
-      // following code.
-      // _timer = Timer(
-      //   Duration(minutes: 1) -
-      //       Duration(seconds: _dateTime.second) -
-      //       Duration(milliseconds: _dateTime.millisecond),
-      //   _updateTime,
-      // );
+
       // Update once per second, but make sure to do it at the beginning of each
       // new second, so that the clock is accurate.
       _timer = Timer(
         Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
         _updateTime,
       );
+      if (_dateTime.minute == 59 &&
+          _dateTime.second > 54 &&
+          !_hgController.isAnimating) {
+        _hgController.forward();
+      } else if (_dateTime.minute == 0 &&
+          _dateTime.second < 5 &&
+          !_hgController.isAnimating) {
+        _hgController.reverse();
+      }
     });
   }
 
@@ -121,6 +121,7 @@ class _DigitalClockState extends State<DigitalClock>
     final minute = _dateTime.minute;
     final second = _dateTime.second;
     final minutePercent = (minute + (second / 60)) / 60;
+    //Theme.of(context).primaryColor = colors[_Element.background];
     // final fontSize = MediaQuery.of(context).size.height / 50;
     // final offset = fontSize / 7;
     // final defaultStyle = TextStyle(
@@ -142,29 +143,37 @@ class _DigitalClockState extends State<DigitalClock>
         print(constraints.maxHeight);
         return DefaultTextStyle(
           style: TextStyle(
+            //GoogleFonts.monoton(  //fun top
+            //GoogleFonts.frederickatheGreat( //good for bottom
+            // GoogleFonts.sirinStencil( //maybe bottom
             color: colors[_Element.text],
-            fontFamily: 'PressStart2P',
-            fontSize: constraints.maxHeight / 50,
-            decoration: TextDecoration.underline,
+            fontFamily: 'LobsterTwo',
+            fontSize: constraints.maxHeight / 30,
           ),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              // AnimatedSand(
-              //   animation: sandAnimation,
-              // ),
-              // FallingSand(constraints.maxHeight),
-              Flexible(
-                fit: FlexFit.tight,
-                child: HourGlass(
-                  backgroundColor: colors[_Element.background],
-                  maxNumber: 60,
-                  timePercent: minutePercent,
-                  hour: hour,
-                  maxHeight: constraints.maxHeight,
+              Expanded(
+                child: Container(),
+              ),
+              Expanded(
+                child: RotationTransition(
+                  turns: _hgRotateAnimation,
+                  child: ScaleTransition(
+                    scale: _hgScaleAnimation,
+                    child: HourGlass(
+                      backgroundColor: colors[_Element.background],
+                      maxNumber: 60,
+                      timePercent: minutePercent,
+                      hour: hour,
+                      isSpinning: _hgController.isAnimating,
+                    ),
+                  ),
                 ),
+              ),
+              Expanded(
+                child: Container(),
               ),
             ],
           ),

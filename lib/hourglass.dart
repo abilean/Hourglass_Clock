@@ -10,6 +10,7 @@ class HourGlass extends StatelessWidget {
   final double timePercent;
   final int hour;
   final double maxHeight;
+  final bool isSpinning;
 
   final int _glassflex = 93;
   final int _baseflex = 13;
@@ -19,7 +20,8 @@ class HourGlass extends StatelessWidget {
       @required this.maxNumber,
       @required this.timePercent,
       @required this.hour,
-      @required this.maxHeight});
+      @required this.maxHeight,
+      this.isSpinning});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class HourGlass extends StatelessWidget {
         aspectRatio: 0.463,
         child: Stack(
           children: <Widget>[
-            Sand(maxNumber, timePercent, _glassflex, _baseflex, maxHeight),
+            Sand(timePercent, _glassflex, _baseflex, isSpinning),
             Center(
               child: Image(
                 image: AssetImage("assets/hourGlassOutline.png"),
@@ -64,7 +66,7 @@ class HourGlass extends StatelessWidget {
                     Expanded(
                       flex: _baseflex,
                       child: Container(),
-                    )
+                    ),
                   ],
                 ),
               )

@@ -2,14 +2,12 @@ import 'package:digital_clock/falling_sand.dart';
 import 'package:flutter/material.dart';
 
 class Sand extends StatelessWidget {
-  final int maxNumber;
   final double timePercent;
   final int glassFlex;
   final int baseFlex;
-  final double maxHeight;
+  final bool isSpinning;
 
-  Sand(this.maxNumber, this.timePercent, this.glassFlex, this.baseFlex,
-      this.maxHeight);
+  Sand(this.timePercent, this.glassFlex, this.baseFlex, this.isSpinning);
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +18,11 @@ class Sand extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Expanded(
-                flex: 13,
+                flex: baseFlex,
                 child: Container(),
               ),
               Expanded(
-                flex: 93, //187
+                flex: glassFlex, //187
                 child: Padding(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: FractionallySizedBox(
@@ -46,13 +44,14 @@ class Sand extends StatelessWidget {
         ),
         Expanded(
           child: Stack(
+            overflow: Overflow.clip,
             alignment: AlignmentDirectional.topCenter,
             children: <Widget>[
-              FallingSand(maxHeight),
+              isSpinning ? Container() : FallingSand(),
               Column(
                 children: <Widget>[
                   Expanded(
-                    flex: 93,
+                    flex: glassFlex,
                     child: Align(
                       alignment: AlignmentDirectional.bottomCenter,
                       child: Padding(
@@ -62,8 +61,8 @@ class Sand extends StatelessWidget {
                           heightFactor: timePercent,
                           child: ClipRRect(
                             borderRadius: BorderRadius.horizontal(
-                                left: Radius.elliptical(150, 50),
-                                right: Radius.elliptical(150, 50)),
+                              left: Radius.circular(50),
+                            ),
                             child: Container(
                               color: Colors.red,
                             ),
@@ -73,7 +72,7 @@ class Sand extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    flex: 13,
+                    flex: baseFlex,
                     child: Container(),
                   ),
                 ],
