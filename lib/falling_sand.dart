@@ -4,7 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'dart:math';
 
 class FallingSand extends StatefulWidget {
-  FallingSand();
+  final Color sandColor;
+
+  FallingSand({@required this.sandColor});
   @override
   _FallingSandState createState() => _FallingSandState();
 }
@@ -55,7 +57,7 @@ class _FallingSandState extends State<FallingSand>
                   child: Container(
                     height: _blockSize,
                     width: _blockSize,
-                    color: Colors.red,
+                    color: widget.sandColor,
                   ),
                 );
               },

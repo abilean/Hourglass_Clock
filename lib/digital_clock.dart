@@ -5,33 +5,29 @@
 import 'dart:async';
 //import 'dart:html';
 
-import 'package:digital_clock/hourglass.dart';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
+import './hourglass.dart';
 
 enum _Element {
   background,
   text,
-  shadow,
+  sand,
 }
 
 final _lightTheme = {
-  _Element.background: Color(0xFF81B3FE),
+  _Element.background: Colors.lightBlue, //Color(0xFF81B3FE),
   _Element.text: Colors.white,
-  _Element.shadow: Colors.black,
+  _Element.sand: Colors.red,
 };
 
 final _darkTheme = {
   _Element.background: Colors.black,
   _Element.text: Colors.white,
-  _Element.shadow: Color(0xFF174EA6),
+  _Element.sand: Colors.purple,
 };
 
-/// A basic digital clock.
-///
-/// You can do better than this!
 class DigitalClock extends StatefulWidget {
   const DigitalClock(this.model);
 
@@ -61,7 +57,7 @@ class _DigitalClockState extends State<DigitalClock>
       duration: const Duration(seconds: 5),
       vsync: this,
     );
-    _hgRotateAnimation = Tween<double>(begin: 0, end: 4).animate(_hgController);
+    _hgRotateAnimation = Tween<double>(begin: 0, end: 3).animate(_hgController);
     _hgScaleAnimation = Tween<double>(begin: 1, end: 0).animate(_hgController);
   }
 
@@ -111,6 +107,55 @@ class _DigitalClockState extends State<DigitalClock>
     });
   }
 
+  Widget _weatherIcon() {
+    switch (widget.model.weatherCondition) {
+      case WeatherCondition.sunny:
+        return Icon(Icons.wb_sunny);
+        break;
+      case WeatherCondition.cloudy:
+        return Icon(Icons.wb_cloudy);
+        break;
+      case WeatherCondition.rainy:
+        return Icon(Icons.beach_access);
+        break;
+      case WeatherCondition.snowy:
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.wb_cloudy),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.ac_unit,
+                  color: Colors.white,
+                ),
+                Icon(Icons.ac_unit),
+              ],
+            ),
+          ],
+        );
+        break;
+      case WeatherCondition.foggy:
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.wb_cloudy),
+                Icon(Icons.wb_cloudy),
+              ],
+            ),
+            Icon(Icons.wb_cloudy),
+          ],
+        );
+        break;
+      default:
+        return Icon(Icons.wb_cloudy);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).brightness == Brightness.light
@@ -121,64 +166,54 @@ class _DigitalClockState extends State<DigitalClock>
     final minute = _dateTime.minute;
     final second = _dateTime.second;
     final minutePercent = (minute + (second / 60)) / 60;
-    //Theme.of(context).primaryColor = colors[_Element.background];
-    // final fontSize = MediaQuery.of(context).size.height / 50;
-    // final offset = fontSize / 7;
-    // final defaultStyle = TextStyle(
-    //   color: colors[_Element.text],
-    //   fontFamily: 'PressStart2P',
-    //   fontSize: fontSize,
-    // shadows: [
-    //   Shadow(
-    //     blurRadius: 0,
-    //     color: colors[_Element.shadow],
-    //     offset: Offset(1, 0),
-    //   ),
-    // ],
-    // );
 
-    return Container(
-      color: colors[_Element.background],
-      child: LayoutBuilder(builder: (context, constraints) {
-        print(constraints.maxHeight);
+    return LayoutBuilder(
+      builder: (context, constraints) {
         return DefaultTextStyle(
           style: TextStyle(
-            //GoogleFonts.monoton(  //fun top
-            //GoogleFonts.frederickatheGreat( //good for bottom
-            // GoogleFonts.sirinStencil( //maybe bottom
             color: colors[_Element.text],
             fontFamily: 'LobsterTwo',
             fontSize: constraints.maxHeight / 30,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Expanded(
-                child: Container(),
-              ),
-              Expanded(
-                child: RotationTransition(
-                  turns: _hgRotateAnimation,
-                  child: ScaleTransition(
-                    scale: _hgScaleAnimation,
-                    child: HourGlass(
-                      backgroundColor: colors[_Element.background],
-                      maxNumber: 60,
-                      timePercent: minutePercent,
-                      hour: hour,
-                      isSpinning: _hgController.isAnimating,
+          child: Container(
+            color: colors[_Element.background],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    child: Center(
+                      child: _weatherIcon(),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-            ],
+                Expanded(
+                  child: RotationTransition(
+                    turns: _hgRotateAnimation,
+                    child: ScaleTransition(
+                      scale: _hgScaleAnimation,
+                      child: HourGlass(
+                        backgroundColor: colors[_Element.background],
+                        sandColor: colors[_Element.sand],
+                        maxNumber: 60,
+                        timePercent: minutePercent,
+                        hour: hour,
+                        isSpinning: _hgController.isAnimating,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Center(child: Text(widget.model.temperatureString)),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
-      }),
+      },
     );
   }
 }

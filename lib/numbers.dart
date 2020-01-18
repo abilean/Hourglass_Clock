@@ -29,14 +29,22 @@ class Numbers extends StatelessWidget {
                 )
               : Expanded(
                   child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 1),
-                            ),
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 1,
+                            color: DefaultTextStyle.of(context).style.color,
                           ),
-                          child: Text(' ${(index) * _spacing} '))));
+                        ),
+                      ),
+                      child: Text(
+                        ' ${(index) * _spacing} ',
+                      ),
+                    ),
+                  ),
+                );
         },
       ),
     );

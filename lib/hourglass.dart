@@ -1,4 +1,4 @@
-import 'package:digital_clock/sand.dart';
+import 'package:digital_clock/falling_sand.dart';
 import 'package:flutter/material.dart';
 import './numbers.dart';
 
@@ -6,22 +6,101 @@ enum Digit { hourTenth, hour, minuteTenth, minute }
 
 class HourGlass extends StatelessWidget {
   final Color backgroundColor;
+  final Color sandColor;
   final int maxNumber;
   final double timePercent;
   final int hour;
-  final double maxHeight;
+
   final bool isSpinning;
 
-  final int _glassflex = 93;
-  final int _baseflex = 13;
+  final int _glassFlex = 93;
+  final int _baseFlex = 13;
 
   HourGlass(
       {@required this.backgroundColor,
+      @required this.sandColor,
       @required this.maxNumber,
       @required this.timePercent,
       @required this.hour,
-      @required this.maxHeight,
       this.isSpinning});
+
+  Widget _sand() {
+    return Column(
+      //Background sand
+      children: <Widget>[
+        Expanded(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                flex: _baseFlex,
+                child: Container(),
+              ),
+              Expanded(
+                flex: _glassFlex,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.bottomCenter,
+                    heightFactor: 1 - timePercent,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(50),
+                      ),
+                      child: Container(
+                        color: sandColor,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Stack(
+            overflow: Overflow.clip,
+            alignment: AlignmentDirectional.topCenter,
+            children: <Widget>[
+              isSpinning
+                  ? Container()
+                  : FallingSand(
+                      sandColor: sandColor,
+                    ),
+              Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: _glassFlex,
+                    child: Align(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        child: FractionallySizedBox(
+                          alignment: Alignment.bottomCenter,
+                          heightFactor: timePercent,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(130),
+                            ),
+                            child: Container(
+                              color: sandColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: _baseFlex,
+                    child: Container(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +110,7 @@ class HourGlass extends StatelessWidget {
         aspectRatio: 0.463,
         child: Stack(
           children: <Widget>[
-            Sand(timePercent, _glassflex, _baseflex, isSpinning),
+            _sand(),
             Center(
               child: Image(
                 image: AssetImage("assets/hourGlassOutline.png"),
@@ -50,9 +129,9 @@ class HourGlass extends StatelessWidget {
                   child: Text(
                     '$hour',
                     style: TextStyle(
-                        fontSize:
-                            DefaultTextStyle.of(context).style.fontSize * 8.0,
-                        decoration: TextDecoration.none),
+                      fontSize:
+                          DefaultTextStyle.of(context).style.fontSize * 8.0,
+                    ),
                   ),
                 ),
               ),
@@ -60,11 +139,11 @@ class HourGlass extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Expanded(
-                      flex: _glassflex,
+                      flex: _glassFlex,
                       child: Numbers(maxNumber),
                     ),
                     Expanded(
-                      flex: _baseflex,
+                      flex: _baseFlex,
                       child: Container(),
                     ),
                   ],
