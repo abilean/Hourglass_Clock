@@ -112,47 +112,21 @@ class _DigitalClockState extends State<DigitalClock>
       case WeatherCondition.sunny:
         return Icon(Icons.wb_sunny);
         break;
+      case WeatherCondition.foggy:
       case WeatherCondition.cloudy:
         return Icon(Icons.wb_cloudy);
         break;
+
+      case WeatherCondition.thunderstorm:
       case WeatherCondition.rainy:
         return Icon(Icons.beach_access);
         break;
       case WeatherCondition.snowy:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.wb_cloudy),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.ac_unit,
-                  color: Colors.white,
-                ),
-                Icon(Icons.ac_unit),
-              ],
-            ),
-          ],
-        );
+        return Icon(Icons.ac_unit);
         break;
-      case WeatherCondition.foggy:
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.wb_cloudy),
-                Icon(Icons.wb_cloudy),
-              ],
-            ),
-            Icon(Icons.wb_cloudy),
-          ],
-        );
-        break;
+
       default:
-        return Icon(Icons.wb_cloudy);
+        return Icon(Icons.wb_sunny);
     }
   }
 
@@ -169,47 +143,62 @@ class _DigitalClockState extends State<DigitalClock>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return DefaultTextStyle(
-          style: TextStyle(
-            color: colors[_Element.text],
-            fontFamily: 'LobsterTwo',
-            fontSize: constraints.maxHeight / 30,
+        return Theme(
+          data: ThemeData(
+            primaryColor: colors[_Element.background],
+            accentColor: colors[_Element.sand],
+            iconTheme: IconThemeData(
+              size: constraints.maxHeight / 9,
+              color: colors[_Element.text],
+            ),
           ),
-          child: Container(
-            color: colors[_Element.background],
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Center(
-                      child: _weatherIcon(),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: RotationTransition(
-                    turns: _hgRotateAnimation,
-                    child: ScaleTransition(
-                      scale: _hgScaleAnimation,
-                      child: HourGlass(
-                        backgroundColor: colors[_Element.background],
-                        sandColor: colors[_Element.sand],
-                        maxNumber: 60,
-                        timePercent: minutePercent,
-                        hour: hour,
-                        isSpinning: _hgController.isAnimating,
+          child: DefaultTextStyle(
+            style: TextStyle(
+              color: colors[_Element.text],
+              fontFamily: 'LobsterTwo',
+              fontSize: constraints.maxHeight / 30,
+            ),
+            child: Container(
+              color: colors[_Element.background],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Center(
+                        child: _weatherIcon(),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Center(child: Text(widget.model.temperatureString)),
+                  Expanded(
+                    child: RotationTransition(
+                      turns: _hgRotateAnimation,
+                      child: ScaleTransition(
+                        scale: _hgScaleAnimation,
+                        child: HourGlass(
+                          maxNumber: 60,
+                          timePercent: minutePercent,
+                          hour: hour,
+                          isSpinning: _hgController.isAnimating,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Container(
+                      child: Center(
+                          child: Text(
+                        widget.model.temperatureString,
+                        style: TextStyle(
+                            fontSize:
+                                DefaultTextStyle.of(context).style.fontSize *
+                                    2),
+                      )),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -5,8 +5,6 @@ import './numbers.dart';
 enum Digit { hourTenth, hour, minuteTenth, minute }
 
 class HourGlass extends StatelessWidget {
-  final Color backgroundColor;
-  final Color sandColor;
   final int maxNumber;
   final double timePercent;
   final int hour;
@@ -17,14 +15,12 @@ class HourGlass extends StatelessWidget {
   final int _baseFlex = 13;
 
   HourGlass(
-      {@required this.backgroundColor,
-      @required this.sandColor,
-      @required this.maxNumber,
+      {@required this.maxNumber,
       @required this.timePercent,
       @required this.hour,
       this.isSpinning});
 
-  Widget _sand() {
+  Widget _sand(BuildContext context) {
     return Column(
       //Background sand
       children: <Widget>[
@@ -47,7 +43,7 @@ class HourGlass extends StatelessWidget {
                         top: Radius.circular(50),
                       ),
                       child: Container(
-                        color: sandColor,
+                        color: Theme.of(context).accentColor,
                       ),
                     ),
                   ),
@@ -64,7 +60,7 @@ class HourGlass extends StatelessWidget {
               isSpinning
                   ? Container()
                   : FallingSand(
-                      sandColor: sandColor,
+                      sandColor: Theme.of(context).accentColor,
                     ),
               Column(
                 children: <Widget>[
@@ -82,7 +78,7 @@ class HourGlass extends StatelessWidget {
                               top: Radius.circular(130),
                             ),
                             child: Container(
-                              color: sandColor,
+                              color: Theme.of(context).accentColor,
                             ),
                           ),
                         ),
@@ -110,11 +106,11 @@ class HourGlass extends StatelessWidget {
         aspectRatio: 0.463,
         child: Stack(
           children: <Widget>[
-            _sand(),
+            _sand(context),
             Center(
               child: Image(
                 image: AssetImage("assets/hourGlassOutline.png"),
-                color: backgroundColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             Center(
