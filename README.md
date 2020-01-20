@@ -1,10 +1,8 @@
-# Digital Clock
+# Hourglass Clock
 
-This app is an example of a digital clock.
-It has a light theme and a dark theme.
-See the [Analog Clock](../analog_clock) if you'd like an example that displays the weather and location.
-
-<img src='digital.gif' width='350'>
+This is not really an analog or digital clock.... it's an hourglass clock!
+The hour is at the top of the hourglass and the sand fills up the bottom to show the minutes. At the change of each hour the hourglass will spin and shrink away, then new hourglass with the new hour will spin back into place.
+Weather is on the left and tempeture is on the right.
 
 <img src='digital_dark.png' width='350'>
 

@@ -28,16 +28,16 @@ final _darkTheme = {
   _Element.sand: Colors.purple,
 };
 
-class DigitalClock extends StatefulWidget {
-  const DigitalClock(this.model);
+class HourglassClock extends StatefulWidget {
+  const HourglassClock(this.model);
 
   final ClockModel model;
 
   @override
-  _DigitalClockState createState() => _DigitalClockState();
+  _HourglassClockState createState() => _HourglassClockState();
 }
 
-class _DigitalClockState extends State<DigitalClock>
+class _HourglassClockState extends State<HourglassClock>
     with SingleTickerProviderStateMixin {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
@@ -62,7 +62,7 @@ class _DigitalClockState extends State<DigitalClock>
   }
 
   @override
-  void didUpdateWidget(DigitalClock oldWidget) {
+  void didUpdateWidget(HourglassClock oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.model != oldWidget.model) {
       oldWidget.model.removeListener(_updateModel);
